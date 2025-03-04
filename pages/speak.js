@@ -3,6 +3,9 @@ var SPEAK = {
 	current: null,
 	convert: function () {
 		const text = document.getElementById('speak-text').value;
+		const playerBox = document.getElementById('speak-player-box');
+		playerBox.classList.add('app-hidden');
+
 		if (isEmpty(text)) {
 			MESSAGE.alert('Alert', 'Please enter text to convert.');
 			return false;
@@ -24,6 +27,13 @@ var SPEAK = {
 		} else {
 			playButton.classList.remove('app-button-disabled');
 		}
+	},
+	example: function () {
+		const voice = document.getElementById('speak-voice').value;
+		const file = 'speak-' + voice + '.mp3';
+		const example = document.getElementById('speak-example');
+		example.src = 'assets/audio/' + file;
+		example.play();
 	},
 	save: function () {
 		const voice = document.getElementById('speak-voice').value;
@@ -76,12 +86,24 @@ async function convertText(postData) {
 
 		if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
 
+		// Check if response is actually an audio file (not JSON)
+		const contentType = response.headers.get('Content-Type');
+		if (!contentType || !contentType.includes('audio')) {
+			const errorResponse = await response.json();
+			MESSAGE.alert('Error', errorResponse.error);
+			return;
+		}
+
+		// Handle audio response
 		const audioBlob = await response.blob();
 		const audioUrl = URL.createObjectURL(audioBlob);
 
-		const audioPlayer = document.getElementById('audioPlayer');
-		audioPlayer.src = audioUrl;
-		audioPlayer.play();
+		const player = document.getElementById('speak-player');
+		player.src = audioUrl;
+		player.play();
+
+		const playerBox = document.getElementById('speak-player-box');
+		playerBox.classList.remove('app-hidden');
 	} catch (error) {
 		MESSAGE.alert('Alert', 'Failed to convert text.');
 	}

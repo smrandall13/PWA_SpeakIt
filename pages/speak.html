@@ -2,12 +2,20 @@
 	<div id="speak-controls">
 		<div id="speak-option-voice" class="speak-option">
 			Voice:
-			<select id="speak-voice" class="speak-select" onchange="SPEAK.save()">
-				<option value="alloy" selected>Alloy</option>
-				<option value="nova">Nova</option>
-				<option value="shimmer">Shimmer</option>
-				<option value="echo">Echo</option>
-				<option value="fable">Fable</option>
+			<select id="speak-voice" class="speak-select" onchange="SPEAK.save();SPEAK.example();">
+				<optgroup label="Masculine">
+					<option value="alloy" selected>Alloy - Natural and balanced</option>
+					<option value="ash">Ash - Deep and resonant</option>
+					<option value="echo">Echo - Crisp and articulate</option>
+					<option value="onyx">Onyx - Smooth and calming</option>
+				</optgroup>
+				<optgroup label="Feminine">
+					<option value="coral">Coral - Bright and cheerful</option>
+					<option value="fable">Fable - Warm and storytelling-like</option>
+					<option value="nova">Nova - Bright and clear</option>
+					<option value="sage">Sage - Wise and thoughtful</option>
+					<option value="shimmer">Shimmer - Smooth and expressive</option>
+				</optgroup>
 			</select>
 		</div>
 		<div id="speak-option-rate" class="speak-option">
@@ -61,4 +69,7 @@
 		<div id="speak-play" class="app-button app-button app-button-small" onclick="SPEAK.convert()">Convert</div>
 	</div>
 	<div id="speak-text-box"><textarea id="speak-text" placeholder="Enter Text Here" oninput="SPEAK.check()"></textarea></div>
+
+	<div id="speak-player-box" class="app-hidden"><audio id="speak-player" controls></audio></div>
+	<div id="speak-example-box" class="app-hidden"><audio id="speak-example" controls></audio></div>
 </div>
