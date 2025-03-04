@@ -1,25 +1,25 @@
 /* Import Playful Yet Readable Font */
 @font-face {
 	font-family: 'Playfair';
-	src: url('/assets/fonts/Playfair.ttf') format('truetype');
+	src: url('assets/fonts/Playfair.ttf') format('truetype');
 	font-weight: 400;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'Nunito';
-	src: url('/assets/fonts/Nunito.ttf') format('truetype');
+	src: url('assets/fonts/Nunito.ttf') format('truetype');
 	font-weight: 400;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'Courier Prime';
-	src: url('/assets/fonts/CourierPrime.ttf') format('truetype');
+	src: url('assets/fonts/CourierPrime.ttf') format('truetype');
 	font-weight: 400;
 	font-style: normal;
 }
 @font-face {
 	font-family: 'Roboto';
-	src: url('/assets/fonts/Roboto.ttf') format('truetype');
+	src: url('assets/fonts/Roboto.ttf') format('truetype');
 	font-weight: 400;
 	font-style: normal;
 }

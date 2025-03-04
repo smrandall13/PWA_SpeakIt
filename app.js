@@ -270,7 +270,7 @@ const APP = {
 		prompt: null,
 		init: function () {
 			if ('serviceWorker' in navigator) {
-				navigator.serviceWorker.register('/service-worker.js');
+				navigator.serviceWorker.register('service-worker.js');
 				APP.pwa.handle();
 			}
 		},
@@ -318,7 +318,7 @@ const APP = {
 	init: async function (callback) {
 		try {
 			// App Data (app.json)
-			const response = await fetch('/app.json');
+			const response = await fetch('app.json');
 			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
 			APP.data = await response.json();
 

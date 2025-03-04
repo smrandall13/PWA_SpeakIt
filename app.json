@@ -19,9 +19,9 @@
 		{
 			"id": "speak",
 			"name": "speak",
-			"html": "/pages/speak.html",
-			"style": "/pages/speak.css",
-			"script": "/pages/speak.js"
+			"html": "pages/speak.html",
+			"style": "pages/speak.css",
+			"script": "pages/speak.js"
 		}
 	]
 }

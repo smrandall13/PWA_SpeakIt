@@ -2,7 +2,7 @@
 	"name": "Speak It",
 	"short_name": "Speak It",
 	"description": "A simple Progressive Web App that turns text to speach.",
-	"start_url": "/index.html",
+	"start_url": "index.html",
 	"display": "standalone",
 	"background_color": "#121c2d",
 	"theme_color": "#121c2d",
