@@ -1,4 +1,5 @@
 const VALIDATION_KEY = 'Shaun_Randall';
+const CONVERT_URL = 'https://shaunrandall.com/api/speak.php';
 
 const SPEAK = {
 	text: [],
@@ -59,20 +60,23 @@ const SPEAK = {
 	load: function (speakID) {
 		if (isEmpty(speakID)) return;
 	},
+	unload: function () {
+		MESSAGE.alert('Alert', 'Unloading page...');
+	},
 	init: function () {
 		// Gather Saved Data
 		const speakID = STORAGE.get('speak-id');
 		const speakText = STORAGE.get('speak-text');
 		const speakSettings = STORAGE.get('speak-settings');
 
-		if (!isEmpty(speakText)) {
-			SPEAK.text = speakText;
-			document.getElementById('speak-text').value = speakText;
-		}
-		if (!isEmpty(speakID)) {
-			SPEAK.current = speakID;
-			SPEAK.load(speakID);
-		}
+		// if (!isEmpty(speakText)) {
+		// 	SPEAK.text = speakText;
+		// 	document.getElementById('speak-text').value = speakText;
+		// }
+		// if (!isEmpty(speakID)) {
+		// 	SPEAK.current = speakID;
+		// 	SPEAK.load(speakID);
+		// }
 
 		if (!isEmpty(speakSettings)) {
 			const settings = JSON.parse(speakSettings);
@@ -204,7 +208,7 @@ const PLAYER = {
 
 async function convertText(postData) {
 	try {
-		const response = await fetch('https://shaunrandall.com/api/speak.php', {
+		const response = await fetch(CONVERT_URL, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',

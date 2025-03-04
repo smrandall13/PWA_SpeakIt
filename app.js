@@ -317,7 +317,7 @@ const APP = {
 	},
 	init: async function (callback) {
 		try {
-			// App Data (app.json)
+			// App Data
 			const response = await fetch('app.json');
 			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
 			APP.data = await response.json();
