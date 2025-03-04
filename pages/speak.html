@@ -75,7 +75,7 @@
 			<div id="speak-play" class="app-button app-button-small speak-icon speak-icon-play" onclick="PLAYER.play()"></div>
 			<div id="speak-pause" class="app-button app-button-small speak-icon speak-icon-pause app-hidden" onclick="PLAYER.pause()"></div>
 			<input type="range" id="speak-progress" min="0" max="100" value="0" step="1" oninput="PLAYER.seek()" disabled />
-			<span id="current-time">0:00</span> / <span id="duration">0:00</span>
+			<span id="speak-current">0:00</span> / <span id="speak-duration">0:00</span>
 			<div id="speak-play" class="app-button app-button-small speak-icon speak-icon-download" onclick="PLAYER.download()"></div>
 			<audio id="speak-player" class="app-hidden" src="assets/audio/speak-nova.mp3"></audio>
 		</div>
