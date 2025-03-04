@@ -40,3 +40,69 @@
 	max-height: 24px;
 	line-height: 24px;
 }
+#speak-player {
+	width: 300px;
+	background-color: var(--input-dark-back);
+	color: var(--input-dark-text);
+	border: 1px solid var(--input-dar-border);
+	border-radius: var(--border-radius);
+	padding: 4px;
+}
+
+/* Hide the default audio controls */
+audio::-webkit-media-controls-panel {
+	background-color: var(--input-dark-back);
+	border-radius: var(--border-radius);
+	border-color: transparent;
+}
+
+/* Style Play/Pause button */
+audio::-webkit-media-controls-play-button {
+	background-color: #00c38a;
+	border-radius: 50%;
+}
+
+/* Style Volume Control */
+audio::-webkit-media-controls-volume-slider {
+	background-color: #00c38a;
+}
+
+#speak-player-controls {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+}
+.speak-icon {
+	width: 30px;
+	min-width: 30px;
+	max-width: 30px;
+	height: 30px;
+	background-size: 80%;
+	background-repeat: no-repeat;
+	background-position: center;
+	cursor: pointer;
+}
+.speak-icon-play {
+	background-image: url(../assets/images/play-white.png);
+}
+.speak-icon-pause {
+	background-image: url(../assets/images/pause-white.png);
+}
+.speak-icon-download {
+	background-image: url(../assets/images/download-white.png);
+}
+
+#speak-progress {
+	flex: 1;
+	margin: 0 8px;
+}
+
+#speak-player-box {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 8px;
+	justify-content: center;
+	width: 100%;
+}

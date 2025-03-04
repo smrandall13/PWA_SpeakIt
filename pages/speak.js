@@ -11,6 +11,12 @@ var SPEAK = {
 			return false;
 		}
 
+		const MAX_LENGTH = 500;
+		if (text.length > MAX_LENGTH) {
+			MESSAGE.alert('Alert', `Text exceeds ${MAX_LENGTH} characters. Please shorten your input.`);
+			return false;
+		}
+
 		const voice = document.getElementById('speak-voice').value;
 		const rate = document.getElementById('speak-rate').value;
 		const pitch = document.getElementById('speak-pitch').value;
@@ -39,9 +45,9 @@ var SPEAK = {
 		const voice = document.getElementById('speak-voice').value;
 		const rate = document.getElementById('speak-rate').value;
 		const pitch = document.getElementById('speak-pitch').value;
-		const volume = document.getElementById('speak-volume').value;
+		// const volume = document.getElementById('speak-volume').value;
 
-		const settings = { voice: voice, rate: rate, pitch: pitch, volume: volume };
+		const settings = { voice: voice, rate: rate, pitch: pitch }; //, volume: volume
 		const speakSettings = JSON.stringify(settings);
 		STORAGE.set('speak-settings', speakSettings);
 	},
@@ -68,23 +74,120 @@ var SPEAK = {
 			if (settings && settings.voice) document.getElementById('speak-voice').value = settings.voice;
 			if (settings && settings.rate) document.getElementById('speak-rate').value = settings.rate;
 			if (settings && settings.pitch) document.getElementById('speak-pitch').value = settings.pitch;
-			if (settings && settings.volume) document.getElementById('speak-volume').value = settings.volume;
+			// if (settings && settings.volume) document.getElementById('speak-volume').value = settings.volume;
 		}
 		SPEAK.check();
 	},
 };
 
+const AUDIO = document.getElementById('speak-player');
+const PLAY = document.getElementById('speak-play');
+const PAUSE = document.getElementById('speak-pause');
+var PLAYER = {
+	play: function () {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.play();
+			PLAY.classList.add('app-hidden');
+			PAUSE.classList.remove('app-hidden');
+		}
+	},
+	stop: function () {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.pause();
+			AUDIO.currentTime = 0;
+			PLAY.classList.remove('app-hidden');
+			PAUSE.classList.add('app-hidden');
+		}
+	},
+	pause: function () {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.pause();
+			PLAY.classList.remove('app-hidden');
+			PAUSE.classList.add('app-hidden');
+		}
+	},
+	replay: function () {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.currentTime = 0;
+			AUDIO.play();
+		}
+	},
+	volume: function (value) {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.volume = value;
+		}
+	},
+	seek: function (value) {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.currentTime = value;
+		}
+	},
+	mute: function () {
+		if (!isEmpty(AUDIO.src)) {
+			AUDIO.muted = !AUDIO.muted;
+		}
+	},
+	update: function () {
+		const volume = AUDIO.volume;
+		const currentTime = AUDIO.currentTime;
+		const duration = AUDIO.duration;
+		const paused = AUDIO.paused;
+		const muted = AUDIO.muted;
+	},
+	reset: function () {
+		AUDIO.src = '';
+	},
+	download: function () {
+		const audioUrl = AUDIO.src;
+
+		if (!audioUrl) {
+			MESSAGE.alert('Error', 'No audio file available to download.');
+			return;
+		}
+
+		const voice = document.getElementById('speak-voice').value;
+		const now = new Date();
+		const date = now.getFullYear().toString().slice(-2) + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+
+		const a = document.createElement('a');
+		a.href = audioUrl;
+		a.download = 'speakit-' + voice + '-' + date + '.mp3';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+	},
+	init: function () {},
+};
+
 async function convertText(postData) {
 	try {
+		const API_KEY = 'Shaun_Randall';
 		const response = await fetch('https://shaunrandall.com/api/speak.php', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
+				Authorization: 'Bearer ' + API_KEY,
 			},
 			body: JSON.stringify(postData),
 		});
 
-		if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+		// First, check if the response is OK
+		if (!response.ok) {
+			// Try to parse the error response as JSON
+			let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+			try {
+				const errorResponse = await response.json(); // Extract error message
+				if (errorResponse.error) {
+					errorMessage = `Error: ${errorResponse.error}`;
+				}
+			} catch (jsonError) {
+				console.error('Failed to parse error response', jsonError);
+			}
+
+			// Display the error message
+			MESSAGE.alert('Error', errorMessage);
+			throw new Error(errorMessage); // Stop execution
+		}
 
 		// Check if response is actually an audio file (not JSON)
 		const contentType = response.headers.get('Content-Type');
@@ -105,7 +208,7 @@ async function convertText(postData) {
 		const playerBox = document.getElementById('speak-player-box');
 		playerBox.classList.remove('app-hidden');
 	} catch (error) {
-		MESSAGE.alert('Alert', 'Failed to convert text.');
+		MESSAGE.alert('Alert', JSON.parse(error.error));
 	}
 }
 
