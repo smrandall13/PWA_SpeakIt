@@ -1,0 +1,8 @@
+#home-image {
+	width: 200px;
+	height: 200px;
+	background-image: url(../icons/app-loadimg.png);
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}

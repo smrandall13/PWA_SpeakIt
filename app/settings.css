@@ -1,0 +1,13 @@
+.settings-block {
+	width: 100%;
+	margin: 16px 0;
+	display: flex;
+	flex-direction: column;
+}
+#settings-copyright {
+	width: 100%;
+	font-size: var(--font-size-sm);
+	text-align: center;
+	color: var(--color-muted);
+	margin: 8px auto 0 auto;
+}

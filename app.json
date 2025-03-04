@@ -1,0 +1,27 @@
+{
+	"name": "Speak It",
+	"icon": "icons/app-icon.png",
+	"version": "1.0.0",
+	"defaultPage": "speak",
+	"defaultTheme": "Dark",
+	"defaultFont": "Nunito",
+
+	"copyright": "&copy; 2025 Shaun Randall",
+
+	"displayMenu": false,
+	"displayHome": false,
+	"displaySettings": false,
+
+	"allowInstall": true,
+	"allowNotifications": false,
+
+	"pages": [
+		{
+			"id": "speak",
+			"name": "speak",
+			"html": "/pages/speak.html",
+			"style": "/pages/speak.css",
+			"script": "/pages/speak.js"
+		}
+	]
+}

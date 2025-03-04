@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta id="app-theme-color" name="theme-color" content="#121c2d" />
+		<link id="app-favicon" rel="icon" href="icons/app-icon.png" />
+		<link rel="manifest" href="manifest.json" />
+		<link rel="stylesheet" href="app.css" />
+		<title id="app-title"></title>
+		<script defer src="app.js"></script>
+	</head>
+	<body>
+		<div id="app-cover">
+			<div id="app-cover-image"></div>
+			<div id="app-cover-text">Loading...</div>
+		</div>
+		<header id="app-header">
+			<div id="app-header-info">
+				<img id="app-header-icon" src="icons/app-icon.png" alt="Icon" />
+				<span id="app-header-name"></span>
+			</div>
+			<!-- <nav class="app-nav">
+				Optional Nav Items
+			</nav> -->
+			<div id="app-install" class="app-button app-install app-hidden">
+				<div class="app-button-icon app-icon-download"></div>
+				<div class="app-button-text">Install</div>
+			</div>
+		</header>
+		<main class="app-container">
+			<section id="app-content"><div id="app-content-container"></div></section>
+		</main>
+	</body>
+</html>
