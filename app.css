@@ -49,6 +49,7 @@
 	--color-text: #eaeaea;
 	--color-border: #00a878;
 	--color-caution: #f44336;
+	--color-disabled: #a0a0a0;
 
 	--color-muted: #a0a0a0;
 
@@ -335,6 +336,12 @@ body.theme-light select option textarea {
 .app-button-active {
 	background-color: var(--color-hover);
 	/* opacity: 0.75; */
+}
+.app-button-disabled,
+.app-button[disabled] {
+	background-color: var(--color-disabled);
+	color: var(--color-disabled-text);
+	cursor: not-allowed;
 }
 
 .app-button-hover {

@@ -2,25 +2,55 @@
 	<div id="speak-controls">
 		<div id="speak-option-voice" class="speak-option">
 			Voice:
-			<select id="speak-voice" class="speak-select"></select>
+			<select id="speak-voice" class="speak-select" onchange="SPEAK.save()">
+				<option value="alloy" selected>Alloy</option>
+				<option value="nova">Nova</option>
+				<option value="shimmer">Shimmer</option>
+				<option value="echo">Echo</option>
+				<option value="fable">Fable</option>
+			</select>
 		</div>
 		<div id="speak-option-rate" class="speak-option">
 			Rate:
-			<select id="speak-rate" class="speak-select"></select>
+			<select id="speak-rate" class="speak-select" style="max-width: 50px; min-width: 50px" onchange="SPEAK.save()">
+				<option value="1.0" selected>1.0</option>
+				<option value="1.1">1.1</option>
+				<option value="1.2">1.2</option>
+				<option value="1.3">1.3</option>
+				<option value="1.4">1.4</option>
+				<option value="1.5">1.5</option>
+				<option value="1.6">1.6</option>
+				<option value="1.7">1.7</option>
+				<option value="1.8">1.8</option>
+				<option value="1.9">1.9</option>
+				<option value="2.0">2.0</option>
+			</select>
 		</div>
 		<div id="speak-option-pitch" class="speak-option">
 			Pitch:
-			<select id="speak-pitch" class="speak-select"></select>
+			<select id="speak-pitch" class="speak-select" style="max-width: 50px; min-width: 50px" onchange="SPEAK.save()">
+				<option value="1.0" selected>1.0</option>
+				<option value="1.1">1.1</option>
+				<option value="1.2">1.2</option>
+				<option value="1.3">1.3</option>
+				<option value="1.4">1.4</option>
+				<option value="1.5">1.5</option>
+				<option value="1.6">1.6</option>
+				<option value="1.7">1.7</option>
+				<option value="1.8">1.8</option>
+				<option value="1.9">1.9</option>
+				<option value="2.0">2.0</option>
+			</select>
 		</div>
 		<div id="speak-option-volume" class="speak-option">
 			Volume:
-			<select id="speak-volume" class="speak-select">
+			<select id="speak-volume" class="speak-select" style="max-width: 50px; min-width: 50px" onchange="SPEAK.save()">
 				<option>0</option>
 				<option>1</option>
 				<option>2</option>
 				<option>3</option>
 				<option>4</option>
-				<option>5</option>
+				<option selected>5</option>
 				<option>6</option>
 				<option>7</option>
 				<option>8</option>
@@ -28,7 +58,7 @@
 				<option>10</option>
 			</select>
 		</div>
-		<div id="speak-play" class="app-button app-button app-button-small">Play</div>
+		<div id="speak-play" class="app-button app-button app-button-small" onclick="SPEAK.convert()">Convert</div>
 	</div>
-	<div id="speak-text-box"><textarea id="speak-text" placeholder="Enter Text Here"></textarea></div>
+	<div id="speak-text-box"><textarea id="speak-text" placeholder="Enter Text Here" oninput="SPEAK.check()"></textarea></div>
 </div>
