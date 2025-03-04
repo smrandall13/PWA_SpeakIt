@@ -1,4 +1,6 @@
-var SPEAK = {
+const VALIDATION_KEY = 'Shaun_Randall';
+
+const SPEAK = {
 	text: [],
 	current: null,
 	convert: function () {
@@ -11,7 +13,7 @@ var SPEAK = {
 			return false;
 		}
 
-		const MAX_LENGTH = 500;
+		const MAX_LENGTH = 1000;
 		if (text.length > MAX_LENGTH) {
 			MESSAGE.alert('Alert', `Text exceeds ${MAX_LENGTH} characters. Please shorten your input.`);
 			return false;
@@ -22,7 +24,7 @@ var SPEAK = {
 		const pitch = document.getElementById('speak-pitch').value;
 
 		STORAGE.set('speak-text', text);
-
+		MESSAGE.show('Converting', 'Converting Text please wait...');
 		convertText({ text: text, voice: voice, rate: rate, pitch: pitch });
 	},
 	check: function () {
@@ -33,6 +35,9 @@ var SPEAK = {
 		} else {
 			playButton.classList.remove('app-button-disabled');
 		}
+
+		const count = document.getElementById('speak-count');
+		count.innerHTML = text.length + ' of 1000';
 	},
 	example: function () {
 		const voice = document.getElementById('speak-voice').value;
@@ -83,7 +88,11 @@ var SPEAK = {
 const AUDIO = document.getElementById('speak-player');
 const PLAY = document.getElementById('speak-play');
 const PAUSE = document.getElementById('speak-pause');
-var PLAYER = {
+const PROGRESS = document.getElementById('speak-progress');
+const CURRENT = document.getElementById('speak-current');
+const DURATION = document.getElementById('speak-duration');
+
+const PLAYER = {
 	play: function () {
 		if (!isEmpty(AUDIO.src)) {
 			AUDIO.play();
@@ -156,17 +165,50 @@ var PLAYER = {
 		a.click();
 		document.body.removeChild(a);
 	},
-	init: function () {},
+	init: function (audioUrl) {
+		if (isEmpty(audioUrl)) return;
+
+		const formatTime = (seconds) => {
+			const minutes = Math.floor(seconds / 60);
+			const secs = Math.floor(seconds % 60);
+			return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+		};
+
+		AUDIO.addEventListener('loadedmetadata', () => {
+			const duration = parseInt(AUDIO.duration, 10);
+			PROGRESS.min = 0;
+			PROGRESS.max = duration;
+			DURATION.textContent = formatTime(duration);
+		});
+
+		AUDIO.addEventListener('timeupdate', () => {
+			PROGRESS.value = AUDIO.currentTime;
+			CURRENT.textContent = formatTime(AUDIO.currentTime);
+		});
+
+		AUDIO.addEventListener('ended', () => {
+			PLAYER.stop();
+		});
+
+		PROGRESS.addEventListener('input', () => {
+			AUDIO.currentTime = PROGRESS.value;
+		});
+
+		AUDIO.src = audioUrl;
+		PLAYER.play();
+
+		const playerBox = document.getElementById('speak-player-box');
+		playerBox.classList.remove('app-hidden');
+	},
 };
 
 async function convertText(postData) {
 	try {
-		const API_KEY = 'Shaun_Randall';
 		const response = await fetch('https://shaunrandall.com/api/speak.php', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: 'Bearer ' + API_KEY,
+				Authorization: 'Bearer ' + VALIDATION_KEY,
 			},
 			body: JSON.stringify(postData),
 		});
@@ -201,12 +243,8 @@ async function convertText(postData) {
 		const audioBlob = await response.blob();
 		const audioUrl = URL.createObjectURL(audioBlob);
 
-		const player = document.getElementById('speak-player');
-		player.src = audioUrl;
-		player.play();
-
-		const playerBox = document.getElementById('speak-player-box');
-		playerBox.classList.remove('app-hidden');
+		PLAYER.init(audioUrl);
+		MESSAGE.hide();
 	} catch (error) {
 		MESSAGE.alert('Alert', JSON.parse(error.error));
 	}

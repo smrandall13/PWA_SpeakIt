@@ -514,8 +514,8 @@ const MESSAGE = {
 		const appMessageBack = document.getElementById('app-message-back');
 		const appMessage = document.getElementById('app-message');
 
-		appMessageBack.style.opacity = 0;
-		appMessage.style.opacity = 0;
+		if (appMessageBack) appMessageBack.style.opacity = 0;
+		if (appMessage) appMessage.style.opacity = 0;
 		setTimeout(() => {
 			appMessageBack.remove();
 			appMessage.remove();

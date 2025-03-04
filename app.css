@@ -864,9 +864,6 @@ body.theme-light select option textarea {
 	width: auto;
 	display: inline-block;
 }
-.app-box-group + .app-box-group {
-	/* margin-left: 8px; */
-}
 .app-box-group-title {
 	font-size: var(--font-size-h3);
 	width: 100%;
@@ -1246,9 +1243,6 @@ body.theme-light select option textarea {
 		top: 40px;
 		padding-bottom: 40px;
 		padding-left: 0px;
-	}
-	#app-menu:not(.app-menu-closed) {
-		/* box-shadow: 0px 1px 5px rgba(0, 168, 120, 1); */
 	}
 	header {
 		padding: 0 8px;
