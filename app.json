@@ -1,7 +1,7 @@
 {
 	"name": "Speak It",
 	"icon": "icons/app-icon.png",
-	"version": "1.0.0",
+	"version": "1.0.3",
 	"defaultPage": "speak",
 	"defaultTheme": "Dark",
 	"defaultFont": "Nunito",
@@ -14,6 +14,8 @@
 
 	"allowInstall": true,
 	"allowNotifications": false,
+
+	"trackLocation": "",
 
 	"pages": [
 		{

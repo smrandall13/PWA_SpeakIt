@@ -79,9 +79,6 @@
 .speak-icon-pause {
 	background-image: url(../assets/images/pause-white.png);
 }
-.speak-icon-download {
-	background-image: url(../assets/images/download-white.png);
-}
 
 #speak-progress {
 	width: 100%;

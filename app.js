@@ -1,28 +1,30 @@
 const appContent = document.getElementById('app-content');
 const APP = {
+	root: '',
 	data: {},
+	locate: { lat: null, lng: null, acc: null },
 	timeouts: [],
 	intervals: [],
 	executions: [],
 	settings: { page: '', theme: '', font: '' },
 	page: {
 		current: '',
-		go: async function (pageName) {
+		go: async function (pageID = '') {
 			// Don't reload same page
-			if (APP.page.current === pageName) {
+			if (APP.page.current === pageID) {
 				return;
 			}
 
 			let htmlPath = ``;
 			let cssPath = ``;
 			let jsPath = ``;
-			if (pageName === 'home' || pageName === 'settings') {
-				htmlPath = `/app/${pageName}.html`;
-				cssPath = `/app/${pageName}.css`;
-				jsPath = `/app/${pageName}.js`;
+			if (pageID === 'home' || pageID === 'settings') {
+				htmlPath = `/app/${pageID}.html`;
+				cssPath = `/app/${pageID}.css`;
+				jsPath = `/app/${pageID}.js`;
 			} else {
 				let pageData = null;
-				if (APP.data && APP.data.pages) pageData = APP.data.pages.find((page) => page.id === pageName);
+				if (APP.data && APP.data.pages) pageData = APP.data.pages.find((page) => page.id === pageID);
 				if (pageData) {
 					if (pageData && pageData.html) {
 						htmlPath = pageData.html;
@@ -40,10 +42,20 @@ const APP = {
 			if (!isEmpty(htmlPath)) {
 				const contentElement = document.getElementById('app-content-container');
 				try {
-					const response = await fetch(htmlPath);
-					if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
-					contentElement.innerHTML = await response.text();
-					APP.page.current = pageName;
+					if (contentElement) {
+						FETCH(
+							htmlPath,
+							null,
+							(data) => {
+								contentElement.innerHTML = data;
+								APP.page.current = pageID;
+							},
+							(error) => {
+								LOG.error('Error loading HTML:' + error);
+							},
+							{ method: 'GET' }
+						);
+					}
 				} catch (error) {
 					LOG.error('Error loading HTML:' + error);
 				}
@@ -51,14 +63,21 @@ const APP = {
 				// Load CSS
 				if (!isEmpty(cssPath)) {
 					try {
-						const response = await fetch(cssPath);
-						if (!response.ok) throw new Error(`Failed to load ${cssPath}`);
-
-						const cssLink = document.createElement('link');
-						cssLink.rel = 'stylesheet';
-						cssLink.href = cssPath;
-						cssLink.classList.add('dynamic-style'); // Mark to remove later
-						document.head.appendChild(cssLink);
+						FETCH(
+							cssPath,
+							null,
+							() => {
+								const cssLink = document.createElement('link');
+								cssLink.rel = 'stylesheet';
+								cssLink.href = APP.root + cssPath;
+								cssLink.classList.add('dynamic-style'); // Mark to remove later
+								document.head.appendChild(cssLink);
+							},
+							(error) => {
+								LOG.error('Error loading CSS:' + error);
+							},
+							{ method: 'GET' }
+						);
 					} catch (error) {
 						LOG.error('Error loading CSS:' + error);
 					}
@@ -67,20 +86,36 @@ const APP = {
 				// Load JS
 				if (!isEmpty(jsPath)) {
 					try {
-						const response = await fetch(jsPath);
-						if (!response.ok) throw new Error(`Failed to load ${jsPath}`);
-
-						const script = document.createElement('script');
-						script.src = jsPath;
-						script.classList.add('dynamic-script'); // Mark to remove later
-						script.defer = true;
-						document.body.appendChild(script);
+						FETCH(
+							jsPath,
+							null,
+							() => {
+								const script = document.createElement('script');
+								script.src = APP.root + jsPath;
+								script.classList.add('dynamic-script'); // Mark to remove later
+								script.defer = true;
+								document.body.appendChild(script);
+							},
+							(error) => {
+								LOG.error('Error loading JS:' + error);
+							},
+							{ method: 'GET' }
+						);
 					} catch (error) {
 						LOG.error('Error loading JS:' + error);
 					}
 				}
 
-				STORAGE.set('app-page', pageName);
+				STORAGE.set('app-page', pageID);
+
+				// Get Page Name
+				const pageName = APP.data.pages.find((page) => page.id === pageID).name;
+
+				if (pageName !== APP.data.name) {
+					APP.title(APP.data.name + ' - ' + pageName);
+				} else {
+					APP.title(APP.data.name);
+				}
 			}
 
 			if (APP.data.displayMenu === true) {
@@ -196,6 +231,7 @@ const APP = {
 									</div>
 								</div>`;
 				}
+				menuContent += '</div>';
 
 				// Copyright
 				if (!isEmpty(APP.data.copyright)) {
@@ -203,7 +239,7 @@ const APP = {
 				}
 
 				// Add Content To Menu
-				menu.innerHTML = menuContent + '</div>';
+				menu.innerHTML = menuContent;
 
 				// Toggle
 				const toggleButton = document.getElementById('app-menu-toggle');
@@ -315,303 +351,191 @@ const APP = {
 	execute: function (callback) {
 		APP.executions.push(callback);
 	},
+	title: function (title = '') {
+		if (!isEmpty(title)) {
+			document.title = title;
+			document.getElementById('app-title').innerHTML = title;
+		}
+	},
 	init: async function (callback) {
+		APP.root = window.location.href;
 		try {
-			// App Data
-			const response = await fetch('app.json');
-			if (!response.ok) throw new Error(`Failed to load ${htmlPath}`);
-			APP.data = await response.json();
+			// App Data (app.json)
+			FETCH(
+				'app.json',
+				null, // No data payload for GET requests
+				(data) => {
+					console.log('D1', data);
+					APP.data = data;
 
-			// Check Font
-			let fontName = STORAGE.get('app-font');
-			if (isEmpty(fontName)) {
-				fontName = APP.data.defaultFont;
-			}
-			if (isEmpty(fontName) || !APP.font.fonts.find((f) => f.name === fontName)) {
-				fontName = APP.font.fonts[0].name;
-			}
-			APP.font.apply(fontName);
+					// Check Font
+					let fontName = STORAGE.get('app-font');
+					if (isEmpty(fontName)) fontName = APP.data.defaultFont;
+					if (isEmpty(fontName) || !APP.font.fonts.find((f) => f.name === fontName)) fontName = APP.font.fonts[0].name;
+					APP.font.apply(fontName);
+					console.log('D2', data);
 
-			// Check Theme
-			let themeName = STORAGE.get('app-theme');
-			if (isEmpty(themeName)) {
-				themeName = APP.data.defaultTheme;
-			}
-			if (isEmpty(themeName) || !APP.theme.themes.find((f) => f.name === themeName)) {
-				themeName = APP.theme.themes[0].name;
-			}
-			APP.theme.apply(themeName);
+					// Check Theme
+					let themeName = STORAGE.get('app-theme');
+					if (isEmpty(themeName)) {
+						themeName = APP.data.defaultTheme;
+					}
+					if (isEmpty(themeName) || !APP.theme.themes.find((f) => f.name === themeName)) {
+						themeName = APP.theme.themes[0].name;
+					}
+					APP.theme.apply(themeName);
+					console.log('D3', data);
 
-			// App Info
-			document.getElementById('app-header-name').innerHTML = APP.data.name;
-			document.getElementById('app-title').innerHTML = APP.data.name;
-			document.getElementById('app-favicon').href = APP.data.icon;
-			document.getElementById('app-header-icon').src = APP.data.icon;
+					// App Info
+					document.getElementById('app-name').innerHTML = APP.data.name;
+					document.getElementById('app-icon').src = APP.root + APP.data.icon;
+					console.log('D4', data);
 
-			// Check Page
-			let pageName = STORAGE.get('app-page');
-			if (isEmpty(pageName)) {
-				pageName = APP.data.defaultPage;
-			}
-			if (pageName === 'home' && APP.data.displayHome === false) {
-				pageName = '';
-			}
-			if (pageName === 'settings' && APP.data.displaySettings === false) {
-				pageName = '';
-			}
-			if (pageName !== 'home' && pageName !== 'settings' && (isEmpty(pageName) || !APP.data.pages.find((p) => p.id === pageName))) {
-				pageName = APP.data.pages[0].id;
-			}
+					// Add Favicon
+					const favicon = document.createElement('link');
+					favicon.rel = 'icon';
+					favicon.type = 'image/png';
+					favicon.href = APP.root + APP.data.icon;
+					document.head.appendChild(favicon);
+					console.log('D5', data);
 
-			// Menu Initialize
-			APP.menu.init();
+					// Theme Color
+					document.getElementById('app-theme-color').content = APP.data.themeColor || '#121c2d';
 
-			// PWA Initialize
-			if (APP.data.allowInstall) {
-				APP.pwa.init();
-			}
-			APP.page.go(pageName);
+					// APP Title
+					APP.title(APP.data.name);
 
-			callback();
+					// Check Page
+					let pageID = STORAGE.get('app-page');
+					if (isEmpty(pageID)) {
+						pageID = APP.data.defaultPage;
+					}
+					if (pageID === 'home' && APP.data.displayHome === false) {
+						pageID = '';
+					}
+					if (pageID === 'settings' && APP.data.displaySettings === false) {
+						pageID = '';
+					}
+					if (pageID !== 'home' && pageID !== 'settings' && (isEmpty(pageID) || !APP.data.pages.find((p) => p.id === pageID))) {
+						pageID = APP.data.pages[0].id;
+					}
+					console.log('D2', data);
+
+					// Menu Initialize
+					APP.menu.init();
+
+					// PWA Initialize
+					if (APP.data.allowInstall) {
+						APP.pwa.init();
+					}
+					APP.page.go(pageID);
+
+					// Location
+					LOCATE.init(APP.data.trackLocation);
+
+					if (isFunction(callback)) callback();
+					console.log('D3', data);
+				},
+				(error) => {
+					LOG.error(`Failed to load app.json:`, error);
+				},
+				{ method: 'GET' } // Override default POST method
+			);
 		} catch (error) {
 			LOG.error('Error loading HTML:' + error);
 		}
 	},
 };
 
-const POPUP = {
-	show: function (popupID) {
-		if (isEmpty(popupID)) return;
-		const popup = document.getElementById(popupID);
-		if (popup.classList.contains('app-hidden')) {
-			popup.classList.remove('app-hidden');
-			setTimeout(() => (popup.style.opacity = 1), 100);
-
-			// Close Button
-			const closeButton = popup.getElementsByClassName('app-popup-close')[0];
-			if (closeButton) {
-				closeButton.addEventListener('click', () => POPUP.hide(popupID));
-			}
-		}
-	},
-	hide: function (popupID) {
-		if (isEmpty(popupID)) return;
-		const popup = document.getElementById(popupID);
-		console.log('P', popupID, popup);
-		if (!popup.classList.contains('app-hidden')) {
-			popup.style.opacity = 0;
-			setTimeout(() => popup.classList.add('app-hidden'), 300);
-		}
-	},
-	toggle: function (popupID) {
-		if (isEmpty(popupID)) return;
-		const popup = document.getElementById(popupID);
-		if (!popup.classList.contains('app-hidden')) {
-			POPUP.hide(popupID);
-		} else {
-			POPUP.show(popupID);
-		}
-	},
-	close: function (popupID) {
-		if (isEmpty(popupID)) {
-			const popups = document.getElementsByClassName('app-popup');
-			for (let i = 0; i < popups.length; i++) {
-				POPUP.hide(popups[i].id);
-			}
-		} else {
-			POPUP.hide(popupID);
-		}
-	},
-};
-
-const NOTIFY = {
-	send: function (title = '', message = '') {
-		if (Notification.permission === 'granted') {
-			new Notification(title, { body: message });
-		} else if (Notification.permission !== 'denied') {
-			NOTIFY.init(() => {
-				NOTIFY.send(title, message);
+const DATA = {
+	database: '',
+	table: '',
+	submit: function (table = '', condition = '', fields = '', request = 'get') {
+		if (!isEmpty(this.database) && !isEmpty(table)) {
+			return new Promise((resolve, reject) => {
+				FETCH(
+					'',
+					{ command: 'data', request: request, database: this.database, table: table, fields: fields, condition: condition },
+					(response) => {
+						// Check if data is JSON or string
+						if (typeof response === 'string' && isJSON(response)) {
+							response = JSON.parse(response);
+						}
+						resolve(response.data); // Already an object or a raw string
+					},
+					(error) => {
+						reject(error);
+					}
+				);
 			});
 		}
 	},
-	init: function (callback) {
-		if ('Notification' in window && APP.data.allowNotifications === true) {
-			Notification.requestPermission().then((permission) => {
-				if (permission === 'granted') {
-					if (isFunction(callback)) callback();
-					LOG.message('Notification permission granted.');
-				} else {
-					LOG.message('Notification permission denied.');
-				}
-			});
-		} else {
-			LOG.message('Notifications are not supported in this browser.');
-		}
+	init: function (database = '', table = '') {
+		this.database = database;
+		this.table = table;
 	},
 };
 
-const MESSAGE = {
-	show: function (title = '', message = '', className = '', callback = null) {
-		if (document.getElementById('app-message')) {
-			document.getElementById('app-message').remove();
-		}
-
-		if (!isEmpty(message)) {
-			// Message Back
-			const appMessageBack = document.createElement('div');
-			appMessageBack.id = 'app-message-back';
-			appMessageBack.style.opacity = 0;
-			appContent.appendChild(appMessageBack);
-
-			const appMessage = document.createElement('div');
-			appMessage.id = 'app-message';
-			appMessage.style.opacity = 0;
-			if (!isEmpty(className)) {
-				appMessage.classList.add(className);
-			}
-
-			if (isEmpty(title)) {
-				title = '';
-			}
-			appMessage.innerHTML = `<div id="app-message-title"><div id='app-message-title-text'>${title}</div><div id="app-message-close"></div></div><div id="app-message-content">${message}</div>`;
-			appContent.appendChild(appMessage);
-			setTimeout(() => {
-				appMessageBack.style.opacity = 0.75;
-				appMessage.style.opacity = 1;
-				isFunction(callback) && callback();
-			}, 200);
-
-			document.getElementById('app-message-close').addEventListener('click', () => {
-				MESSAGE.hide();
-			});
-			document.getElementById('app-message-back').addEventListener('click', () => {
-				MESSAGE.hide();
-			});
-		}
-	},
-	confirm: function (title = '', message = '', confirmFunction = null) {
-		if (!isEmpty(message) && !isEmpty(confirmFunction)) {
-			message += "<div id='app-message-controls'><button id='app-message-confirm' class='app-button app-button-caution'>Yes</button><button id='app-message-cancel' class='app-button'>No</button></div>";
-			MESSAGE.show(title, message, '', () => {
-				const confirmButton = document.getElementById('app-message-confirm');
-				confirmButton.addEventListener('click', () => {
-					MESSAGE.hide();
-					confirmFunction();
-				});
-
-				const cancelButton = document.getElementById('app-message-cancel');
-				cancelButton.addEventListener('click', () => MESSAGE.hide());
-			});
-		}
-	},
-	error: function (message) {
-		MESSAGE.show('Error', message, 'app-message-caution');
-	},
-	alert: function (title, message) {
-		MESSAGE.show(title, message, 'app-message-caution');
-	},
-	hide: function () {
-		const appMessageBack = document.getElementById('app-message-back');
-		const appMessage = document.getElementById('app-message');
-
-		if (appMessageBack) appMessageBack.style.opacity = 0;
-		if (appMessage) appMessage.style.opacity = 0;
-		setTimeout(() => {
-			appMessageBack.remove();
-			appMessage.remove();
-		}, 1000);
-	},
-};
-
-const STORAGE = {
-	get: function (key) {
-		let value = localStorage.getItem(key);
-		try {
-			return JSON.parse(value);
-		} catch (e) {
-			return value;
-		}
-	},
-	set: function (key, value) {
-		localStorage.setItem(key, JSON.stringify(value));
-	},
-	reset: function (key) {
-		localStorage.removeItem(key);
-	},
-};
-
-const LOG = {
-	message: function (message) {
-		if (!isEmpty(message) && console) console.log(message);
-	},
-	error: function (message) {
-		if (!isEmpty(message) && console) console.error(message);
-	},
-};
-
-// Functions
-const isEmpty = (value) => value === undefined || value === null || (typeof value === 'string' && value.trim() === '') || (Array.isArray(value) && value.length === 0) || (typeof value === 'object' && Object.keys(value).length === 0);
-const ifEmpty = (variable, value) => (isEmpty(variable) ? value : variable);
-
-const isFunction = (variable) => typeof variable === 'function';
-
-const capitalizeFirst = (str) => str.charAt(0).toUpperCase() + str.slice(1);
-
-const getValue = (inputID) => {
-	if (!isEmpty(inputID)) {
-		const input = document.getElementById(inputID);
-		if (input && input.id == inputID && input.value) {
-			return input.value;
-		} else {
-			return '';
-		}
+const FETCH_REQUESTS = new Map(); // Track ongoing requests by URL+data
+const FETCH = function (url = '', data = null, successCallback = null, failureCallback = null, options = {}) {
+	if (isEmpty(url)) {
+		url = 'server/api.php';
 	}
-	return '';
-};
+	let fullUrl = url;
+	if (!url.startsWith('http://') && !url.startsWith('https://')) fullUrl = APP.root + url;
 
-const formatDate = (variable = '', format = '') => {
-	if (isEmpty(variable)) return '';
-
-	const date = new Date(variable);
-	const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-	const day = date.getDate().toString().padStart(2, '0'); // Ensures two digits
-	const monthIndex = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensures two digits
-	const year = date.getFullYear();
-
-	if (isEmpty(format)) {
-		// Default: Long format (e.g., "Feb 14, 2025")
-		return `${monthNames[date.getMonth()]} ${day}, ${year}`;
-	} else {
-		// Format: YYYY-MM-DD with zero-padded values
-		return format.replace('YYYY', year).replace('MM', monthIndex).replace('DD', day);
+	// Check Fetch
+	const key = fullUrl + JSON.stringify(data);
+	if (FETCH_REQUESTS.has(key)) {
+		FETCH_REQUESTS.get(key).abort();
+		FETCH_REQUESTS.delete(key);
 	}
-};
 
-const formatTime = (variable = '', format = '') => {
-	if (!variable) return ''; // Ensures variable is not empty or undefined
+	// Create a new AbortController for this request
+	const controller = new AbortController();
+	const signal = controller.signal;
+	FETCH_REQUESTS.set(key, controller);
 
-	const date = new Date(variable);
-	if (isNaN(date.getTime())) return ''; // Handles invalid dates
+	// Default options
+	const defaultOptions = {
+		cache: 'no-store',
+		method: 'POST',
+		mode: 'cors',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		signal, // Attach the signal to allow aborting the request
+	};
 
-	const hours = date.getHours();
-	const minutes = date.getMinutes();
-	const seconds = date.getSeconds();
-	const ampm = hours >= 12 ? 'PM' : 'AM';
-	const hours12 = hours % 12 || 12;
-
-	// Ensure format is a string to prevent errors
-	format = String(format);
-
-	if (!format) {
-		return `${hours12}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-	} else {
-		return format
-			.replace('HH', (format.includes('AMPM') ? hours12 : hours).toString().padStart(2, '0'))
-			.replace('mm', minutes.toString().padStart(2, '0'))
-			.replace('ss', seconds.toString().padStart(2, '0'))
-			.replace('AMPM', ampm);
+	// Only include body if data is provided
+	if (data) {
+		defaultOptions.body = JSON.stringify(data);
 	}
+
+	// Merge user options
+	const fetchOptions = { ...defaultOptions, ...options };
+
+	fetch(fullUrl, fetchOptions)
+		.then((response) => {
+			if (!response.ok) {
+				throw new Error(`HTTP error! Status: ${response.status}`);
+			}
+			const contentType = response.headers.get('content-type');
+			if (contentType && contentType.includes('application/json')) {
+				return response.json();
+			} else {
+				return response.text();
+			}
+		})
+		.then((data) => {
+			if (typeof successCallback === 'function') successCallback(data);
+		})
+		.catch((error) => {
+			if (typeof failureCallback === 'function') failureCallback(error);
+		})
+		.finally(() => {
+			FETCH_REQUESTS.delete(key); // Remove completed/canceled requests from the tracking list
+		});
 };
 
 // Initialize PWA functionality

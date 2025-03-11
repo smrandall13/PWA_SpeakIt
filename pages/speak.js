@@ -1,5 +1,5 @@
 const VALIDATION_KEY = 'Shaun_Randall';
-const CONVERT_URL = 'https://shaunrandall.com/api/speak.php';
+const CONVERT_URL = 'server/speak.php';
 
 const SPEAK = {
 	text: [],
@@ -65,8 +65,8 @@ const SPEAK = {
 	},
 	init: function () {
 		// Gather Saved Data
-		const speakID = STORAGE.get('speak-id');
-		const speakText = STORAGE.get('speak-text');
+		// const speakID = STORAGE.get('speak-id');
+		// const speakText = STORAGE.get('speak-text');
 		const speakSettings = STORAGE.get('speak-settings');
 
 		// if (!isEmpty(speakText)) {

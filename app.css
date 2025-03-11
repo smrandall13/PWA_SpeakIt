@@ -36,9 +36,6 @@
 	--theme-light-offset: rgba(0, 0, 0, 0.05);
 	--theme-light-offset-text: #121c2d;
 
-	--theme-dark-body-shadow: -1px 1px 3px rgba(0, 0, 0, 0.5);
-	--theme-light-body-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-
 	--menu-back: rgba(0, 0, 0, 0.15);
 	/* --secondary-text: #eaeaea; */
 
@@ -49,7 +46,6 @@
 	--color-text: #eaeaea;
 	--color-border: #00a878;
 	--color-caution: #f44336;
-	--color-disabled: #a0a0a0;
 
 	--color-muted: #a0a0a0;
 
@@ -62,7 +58,6 @@
 	--font-size-lg: 1.25rem;
 	--font-size-h1: 1.75rem;
 	--font-size-h2: 1.5rem;
-	--font-size-h3: 1.25rem;
 	--font-size-sm: 0.875rem;
 	--font-size-xsm: 0.75rem;
 	--line-height: 1.5;
@@ -90,7 +85,7 @@
 	--color-shadow: rgb(0, 168, 120);
 
 	/* Button Styles */
-	--button-padding: 0 0.75em;
+	--button-padding: 0 1.5em;
 	--button-height: 40px;
 	--button-height-sm: 30px;
 	--button-font-size: 1rem;
@@ -120,6 +115,8 @@
 	--menu-toggle-color: #eaeaea;
 
 	--text-shadow: 0px 0x 2px rgba(0, 0, 0, 0.75);
+
+	--z-position-top: 9999;
 }
 
 /* Reset Default Browser Styles */
@@ -140,13 +137,13 @@ html {
 
 /* Scrollbar Track */
 ::-webkit-scrollbar-track {
-	background: rgba(0, 0, 0, 0.5); /* Light gray */
+	background: rgba(0, 0, 0, 0.5);
 	border-radius: var(--border-radius);
 }
 
 /* Scrollbar Handle */
 ::-webkit-scrollbar-thumb {
-	background: var(--color-accent); /* Dark gray */
+	background: var(--color-accent);
 	border-radius: var(--border-radius);
 }
 
@@ -161,7 +158,6 @@ body {
 	line-height: var(--line-height);
 	font-size: var(--font-size-base);
 	font-family: var(--font-family);
-	box-shadow: var(--theme-dark-body-shadow);
 }
 
 body.font-nunito {
@@ -188,10 +184,8 @@ body.theme-light {
 .app-pre {
 	background: var(--menu-back);
 	padding: 16px;
-	/* margin: 8px; */
 	border-radius: var(--border-radius);
 }
-/* Default Link Styles */
 a {
 	color: var(--color-accent);
 	text-decoration: none;
@@ -235,32 +229,6 @@ textarea:focus {
 
 .app-input[required] {
 	border-bottom: 1px solid var(--color-accent);
-}
-.app-input-color,
-.app-input-color:hover,
-.app-input-color:focus,
-.app-input-color:active {
-	outline: none;
-	width: 30px;
-	height: 30px;
-	min-width: 30px;
-	min-height: 30px;
-	max-width: 30px;
-	max-height: 30px;
-	flex: 0;
-	padding: 0;
-	margin: 0;
-	border-radius: var(--border-radius);
-	cursor: pointer;
-	appearance: none;
-	/* background-color: transparent; */
-}
-.app-input-color::-webkit-color-swatch,
-.app-input-color::-moz-color-swatch {
-	border: none;
-	border-radius: var(--border-radius);
-	padding: 0;
-	margin: 0;
 }
 
 body.theme-light input,
@@ -314,17 +282,8 @@ body.theme-light select option textarea {
 	background-repeat: no-repeat;
 	text-shadow: var(--text-shadow);
 }
-.app-button:has(:nth-child(2)) {
-	justify-content: space-between;
-}
 .app-button-rounded {
 	border-radius: 50%;
-	height: var(--button-height);
-	min-height: var(--button-height);
-	max-height: var(--button-height);
-	width: var(--button-height);
-	min-width: var(--button-height);
-	max-width: var(--button-height);
 }
 .app-button.app-button-small {
 	height: var(--button-height-sm);
@@ -335,46 +294,6 @@ body.theme-light select option textarea {
 .app-button:hover,
 .app-button-active {
 	background-color: var(--color-hover);
-	/* opacity: 0.75; */
-}
-.app-button-disabled,
-.app-button[disabled] {
-	background-color: var(--color-disabled);
-	color: var(--color-disabled-text);
-	cursor: not-allowed;
-}
-
-.app-button-hover {
-	background-color: transparent;
-}
-.app-button-hover:hover {
-	background-color: var(--color-hover);
-}
-.app-button-icon {
-	flex: 0;
-	width: 30px;
-	height: 30px;
-	min-width: 30px;
-	min-height: 30px;
-	max-width: 30px;
-	max-height: 30px;
-	display: inline-flex;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-}
-.app-button-small .app-button-icon {
-	width: 20px;
-	height: 20px;
-	min-width: 20px;
-	min-height: 20px;
-	max-width: 20px;
-	max-height: 20px;
-}
-.app-button-text {
-	flex: 1;
-	text-align: center;
-	white-space: nowrap;
 }
 
 .app-button-caution {
@@ -385,8 +304,6 @@ body.theme-light select option textarea {
 .app-button-caution:hover {
 	background: var(--button-caution-hover-back);
 }
-
-/* Toggle / Checkbox */
 
 /* Checkbox / Toggle */
 .app-toggle-wrapper {
@@ -431,7 +348,6 @@ body.theme-light select option textarea {
 	background-color: #eee;
 }
 
-/* Move the circle to the right when checked */
 .app-toggle-switch input:checked + .app-toggle-slider {
 	background-color: var(--color-accent);
 }
@@ -449,12 +365,12 @@ body.theme-light select option textarea {
 	border-bottom: 2px solid var(--color-border);
 }
 
-#app-header-info {
+#app-info {
 	display: flex;
 	align-items: center;
-	gap: 16px;
+	gap: 8px;
 }
-#app-header-icon {
+#app-icon {
 	width: 40px;
 	height: 40px;
 	background-size: contain;
@@ -462,12 +378,12 @@ body.theme-light select option textarea {
 	background-position: center;
 }
 
-#app-header-name {
-	font-size: var(--font-size-h2);
+.app-name {
+	font-size: 1.2rem;
 	font-weight: bold;
 }
 
-.app-nav {
+#app-nav {
 	flex-grow: 1;
 	text-align: center;
 }
@@ -521,7 +437,6 @@ body.theme-light select option textarea {
 	z-index: 1;
 	position: absolute;
 	background: var(--menu-back);
-	/* color: var(--menu-text); */
 	width: 192px;
 	min-width: 192px;
 	max-width: 192px;
@@ -582,7 +497,6 @@ body.theme-light select option textarea {
 	transform: translateX(0px);
 }
 #app-menu-header {
-	/* position: absolute; */
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -598,7 +512,6 @@ body.theme-light select option textarea {
 	font-size: var(--font-size-h2);
 }
 #app-menu-content {
-	/* position: absolute; */
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -693,7 +606,6 @@ body.theme-light select option textarea {
 	max-width: 1000px;
 	min-width: 300px;
 	width: 100%;
-	height: 100%;
 	display: flex;
 	flex-direction: column;
 	justify-content: flex-start;
@@ -717,20 +629,20 @@ body.theme-light select option textarea {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: var(--theme-dark-back); /* Change color if needed */
+	background: var(--theme-dark-back);
 	color: var(--theme-dark-text);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	z-index: 9999; /* Ensures it's on top */
-	transition: opacity 1s ease-out; /* Smooth fade-out */
+	z-index: var(--z-position-top);
+	transition: opacity 1s ease-out;
 }
 
 #app-cover-image {
 	width: 200px;
 	height: 200px;
-	background-image: url(icons/app-loadimg.png);
+	background-image: url(./icons/app-loadimg.png);
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -760,18 +672,16 @@ body.theme-light select option textarea {
 	width: auto;
 	min-width: 300px;
 	height: auto;
-	background: var(--theme-dark-back); /* Change color if needed */
+	background: var(--theme-dark-back);
 	color: var(--theme-dark-text);
-	/* border: var(--border); */
 	border-radius: var(--border-radius);
 	display: flex;
 	flex-direction: column;
 	justify-content: start;
 	align-items: start;
-	z-index: 9999; /* Ensures it's on top */
+	z-index: 9999;
 	transition: opacity 0.3s ease-in-out;
 	padding: 8px;
-	/* box-shadow: var(--box-shadow-dark); */
 	pointer-events: all;
 	border: var(--border-accent);
 }
@@ -801,14 +711,12 @@ body.theme-light select option textarea {
 	overflow: auto;
 	line-height: 2rem;
 }
-#app-message-close {
-	/* position: absolute;
-	right: 8px;
-	top: 8px; */
+#app-message-close,
+.app-popup-close {
 	cursor: pointer;
 	width: 30px;
 	height: 30px;
-	background-image: url(/assets/images/cross-white.png);
+	background-image: url(assets/images/cross-white.png);
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: center;
@@ -852,9 +760,6 @@ body.theme-light select option textarea {
 	flex-wrap: wrap;
 	gap: 8px;
 }
-.app-box-wrapper + .app-box-wrapper {
-	margin-top: 8px;
-}
 .app-box-group {
 	border: var(--border);
 	border-radius: var(--border-radius);
@@ -864,19 +769,8 @@ body.theme-light select option textarea {
 	width: auto;
 	display: inline-block;
 }
-.app-box-group-title {
-	font-size: var(--font-size-h3);
-	width: 100%;
-	min-width: 100%;
-	text-align: left;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: 4px;
-	gap: 8px;
-}
-.app-box-content {
+.app-box-content,
+.app-box-grid {
 	display: grid;
 	width: 100%;
 	min-width: 100%;
@@ -885,9 +779,17 @@ body.theme-light select option textarea {
 	grid-gap: 4px;
 	font-size: var(--font-size);
 }
+.app-box-body {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
 .app-box-span {
 	grid-column: span 2;
 }
+
+/* Label */
 .app-box-label {
 	text-align: right;
 	display: inline-flex;
@@ -899,9 +801,10 @@ body.theme-light select option textarea {
 	min-height: 24px;
 	line-height: 24px;
 }
-.app-box-label::after {
+.app-box-content .app-box-label::after,
+.app-box-grid .app-box-label::after {
 	content: ':';
-	margin-left: 1px;
+	margin-left: 2px;
 	margin-right: 4px;
 }
 .app-box-value {
@@ -912,30 +815,24 @@ body.theme-light select option textarea {
 	justify-content: flex-start;
 	min-height: 24px;
 	line-height: 24px;
-	gap: 4px;
 }
-
-.app-box-value input:not([type='color']),
-.app-box-value select,
-.app-box-value textarea {
-	flex: 1;
-}
-
-.app-box-span {
-	grid-column: span 2;
-}
-.app-box-note {
-	grid-column: span 2;
-	font-size: var(--font-size-xsm);
-	color: var(--color-muted);
-	text-align: right;
-	font-style: italic;
+.app-box-body .app-box-label {
+	text-align: left;
 	display: flex;
-	flex-direction: row;
-	justify-content: end;
-	align-items: center;
-	gap: 8px;
+	justify-content: start;
+	margin-top: 8px;
 }
+.app-box-body .app-box-value {
+	text-align: left;
+	display: flex;
+}
+.app-box-seperator {
+	height: 1px;
+	border-top: var(--border);
+	margin: 8px 0;
+	width: 100%;
+}
+
 /* Table */
 .app-table {
 	display: table;
@@ -970,6 +867,42 @@ body.theme-light select option textarea {
 	background-color: var(--theme-dark-offset);
 }
 
+#app-popup-back {
+	z-index: 9998;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	background-color: var(--theme-dark-back);
+	border-radius: var(--border-radius);
+	opacity: 0.5;
+	pointer-events: all;
+}
+#app-popup-container {
+	z-index: 9999;
+	border: var(--border);
+	border-radius: var(--border-radius);
+	background: var(--theme-dark-back);
+	color: var(--theme-dark-text);
+	padding: 8px;
+	width: auto;
+	min-width: 300px;
+	max-width: 300px;
+	height: auto;
+	flex: 1;
+	left: 16px;
+	display: inline-flex;
+	flex-direction: column;
+	justify-content: start;
+	align-items: start;
+	position: fixed;
+	transform: translate(-50%, -50%);
+	left: 50%;
+	top: 50%;
+	box-shadow: var(--box-shadow-dark);
+}
+
 /* Icons */
 .app-icon {
 	width: 40px;
@@ -983,7 +916,7 @@ body.theme-light select option textarea {
 	background-repeat: no-repeat;
 	background-position: center;
 }
-.app-button-small .app-icon {
+.app-icon-small {
 	width: 30px;
 	min-width: 30px;
 	max-width: 30px;
@@ -999,59 +932,74 @@ body.theme-light select option textarea {
 }
 
 .app-icon-settings {
-	background-image: url(/assets/images/settings-white.png);
+	background-image: url(assets/images/settings-white.png);
 }
-
 .app-icon-download {
-	background-image: url(/assets/images/download-white.png);
+	background-image: url(assets/images/download-white.png);
+}
+.app-icon-add {
+	background-image: url(assets/images/add-white.png);
 }
 .app-icon-home {
-	background-image: url(/assets/images/home-white.png);
+	background-image: url(assets/images/home-white.png);
 }
 .app-icon-help {
-	background-image: url(/assets/images/question-white.png);
+	background-image: url(assets/images/question-white.png);
+}
+.app-icon-close,
+.app-icon-cross {
+	background-image: url(assets/images/cross-white.png);
 }
 .app-icon-eye {
-	background-image: url(/assets/images/eye-white.png);
+	background-image: url(assets/images/eye-white.png);
 }
 .app-icon-delete {
-	background-image: url(/assets/images/delete-white.png);
-}
-.app-icon-edit {
-	background-image: url(/assets/images/edit-white.png);
+	background-image: url(assets/images/delete-white.png);
 }
 .app-icon-refresh {
-	background-image: url(/assets/images/refresh-white.png);
+	background-image: url(assets/images/refresh-white.png);
 }
 .app-icon-web {
-	background-image: url(/assets/images/web-white.png);
+	background-image: url(assets/images/web-white.png);
 }
 .app-icon-recycle {
-	background-image: url(/assets/images/recycle-white.png);
+	background-image: url(assets/images/recycle-white.png);
 }
 .app-icon-profile {
-	background-image: url(/assets/images/profile-white.png);
+	background-image: url(assets/images/profile-white.png);
 }
 .app-icon-search {
-	background-image: url(/assets/images/search-white.png);
+	background-image: url(assets/images/search-white.png);
 }
 .app-icon-return {
-	background-image: url(/assets/images/return-white.png);
+	background-image: url(assets/images/return-white.png);
 }
 .app-icon-split {
-	background-image: url(/assets/images/split-white.png);
+	background-image: url(assets/images/split-white.png);
 }
 .app-icon-store {
-	background-image: url(/assets/images/store-white.png);
+	background-image: url(assets/images/store-white.png);
 }
 .app-icon-lookup {
-	background-image: url(/assets/images/lookup-white.png);
+	background-image: url(assets/images/lookup-white.png);
 }
 .app-icon-info {
-	background-image: url(/assets/images/info-white.png);
+	background-image: url(assets/images/info-white.png);
 }
 
 /* Support */
+.no-border {
+	border-color: transparent !important;
+}
+.no-padding,
+.no-pad {
+	padding: 0 !important;
+}
+.no-margin,
+.no-mar {
+	margin: 0 !important;
+}
+
 .app-border {
 	border: var(--border);
 	border-radius: var(--border-radius);
@@ -1060,78 +1008,13 @@ body.theme-light select option textarea {
 	display: none;
 	visibility: hidden;
 	width: 0;
-	min-width: 0;
-	max-width: 0;
 	height: 0;
+	min-width: 0;
+	max-width: none;
 	min-height: 0;
-	max-height: 0;
+	max-height: none;
 	margin: 0;
 	padding: 0;
-}
-.app-popup {
-	position: absolute;
-	top: 70px;
-	left: 50%;
-	transform: translateX(-50%);
-	/* min-width: 300px; */
-	max-width: 90%;
-	height: auto;
-	width: auto;
-	background-color: var(--theme-dark-back);
-	color: var(--theme-dark-color);
-	border: var(--border);
-	border-radius: var(--border-radius);
-	padding: 16px;
-	display: flex;
-	flex-direction: column;
-	box-shadow: var(--box-shadow-dark);
-	/* max-height: 400px; */
-	transition: opacity 0.3s ease-in-out;
-	z-index: 100;
-}
-.app-popup-head {
-	height: 40px;
-	min-height: 40px;
-	max-height: 40px;
-	flex: 0;
-	display: flex;
-	width: 100%;
-	align-items: center;
-	justify-content: space-between;
-	flex-direction: row;
-	font-size: var(--font-size-h2);
-	border-bottom: var(--border);
-}
-.app-popup-close {
-	width: 30px;
-	height: 30px;
-	background-image: url(../assets/images/cross-white.png);
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: center;
-	cursor: pointer;
-}
-.app-popup-body {
-	flex: 1;
-	overflow: auto;
-	/* border: var(--border); */
-	width: 100%;
-	min-width: 100%;
-	padding: 8px 0;
-	max-height: calc(100vh - 300px) !important;
-}
-.app-popup-controls {
-	height: 40px;
-	min-height: 40px;
-	max-height: 40px;
-	flex: 0;
-	display: flex;
-	width: 100%;
-	align-items: center;
-	justify-content: space-between;
-	flex-direction: row;
-	padding: 16px 24px 0 24px;
-	border-top: var(--border);
 }
 .app-ellipsis {
 	display: inline-block;
@@ -1189,35 +1072,18 @@ body.theme-light select option textarea {
 
 .align-center {
 	text-align: center;
+	justify-content: center;
 }
 .align-right {
 	text-align: right;
-}
-.space-between {
-	justify-content: space-between;
-}
-.space-around {
-	justify-content: space-around;
-}
-.justify-center {
-	justify-content: center;
 }
 
 .color-caution {
 	color: var(--color-caution);
 }
 
-.no-border {
-	border: 0;
-}
-
-.selectable {
-	cursor: pointer;
-	user-select: all;
-}
-
-.pointer {
-	cursor: pointer;
+.border-wrap {
+	border: var(--border);
 }
 
 /* Responsive Behavior */
