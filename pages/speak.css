@@ -17,6 +17,7 @@
 	font-size: var(--font-size);
 	line-height: 1.2rem;
 	padding: 8px;
+	min-height: calc(100vh - 240px);
 }
 #speak-count {
 	position: absolute;
@@ -68,7 +69,7 @@
 	min-width: 30px;
 	max-width: 30px;
 	height: 30px;
-	background-size: 80%;
+	background-size: 60%;
 	background-repeat: no-repeat;
 	background-position: center;
 	cursor: pointer;
