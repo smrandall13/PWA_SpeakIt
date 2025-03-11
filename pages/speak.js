@@ -1,8 +1,9 @@
 const VALIDATION_KEY = 'Shaun_Randall';
-const CONVERT_URL = 'server/speak.php';
+// const CONVERT_URL = 'server/speak.php';
+const CONVERT_URL = 'https://shaunrandall.com/api/speak.php';
 
 const SPEAK = {
-	text: [],
+	text: '',
 	current: null,
 	convert: function () {
 		const text = document.getElementById('speak-text').value;
@@ -162,12 +163,21 @@ const PLAYER = {
 		const now = new Date();
 		const date = now.getFullYear().toString().slice(-2) + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
 
+		// Download Audio File
 		const a = document.createElement('a');
 		a.href = audioUrl;
 		a.download = 'speakit-' + voice + '-' + date + '.mp3';
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
+
+		// Download Text File
+		const t = document.createElement('a');
+		t.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(SPEAK.text);
+		t.download = 'speakit-' + voice + '-' + date + '.txt';
+		document.body.appendChild(t);
+		t.click();
+		document.body.removeChild(t);
 	},
 	init: function (audioUrl) {
 		if (isEmpty(audioUrl)) return;
